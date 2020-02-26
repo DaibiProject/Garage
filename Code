@@ -1,30 +1,34 @@
-int A=0;
-int B=1;
-int C=2;
-int D=3;
-int E=4;
-int F=5;
-int G=6;
-int H=7;
-int I=8;
-int J=9;
+int A=5;
+int B=2;
+int C=7;
+int D=9;
+int E=6;
+int F=4;
+int G=3;
+int H=1;
+int I=0;
+int J=8;
 
-int cle[] = {1,3,4,6,8};
-int cl[10] = {1,5,3,4,8,9,5,2,4,7};
+int cle[] = {C,B,F,A,C,E,A,B,D,E};
+int cl[10] = {H,F,A,E,I,B,A,C,G,D};
   
 
 
 void clo(){
   delay(1000);
-  for (int i=0; i <= 10; i++){
+  for (int i=0; i < 10; i++){
     if (i+1 <= sizeof(cle))
     {
         cl[i] = abs(cl[i] - cle[i]);
     }  
-   Serial.print(i);
-   Serial.print(":");
-   Serial.println (cl[i]);
+   
+   Serial.print (cl[i]);
   }
+  Serial.println("");
+  cl[random(5,9)] = random(0,9);
+  cl[random(5,9)] = random(0,9);
+
+  
 
 }
 
