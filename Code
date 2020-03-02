@@ -20,16 +20,34 @@ void clo(){
     if (i+1 <= sizeof(cle))
     {
         cl[i] = abs(cl[i] - cle[i]);
-    }  
-   
-   Serial.print (cl[i]);
-  }
-  Serial.println("");
-  cl[random(5,9)] = random(0,9);
-  cl[random(5,9)] = random(0,9);
+     
+       
+          Serial.print(cl[i]);
+                  
+    }   }
+    
+          Serial.print("--->");
+          Serial.print(cl[5]);
+          Serial.print(cl[6]);
+          Serial.print(cl[7]);
+          Serial.print(cl[8]);
+          Serial.print(cl[9]);
+          Serial.println("");
+          delay(500);
 
-  
+}
 
+
+void setup ()
+{
+  Serial.begin (9600) ;
+ 
+}
+ 
+void loop () 
+{
+    clo();
+ 
 }
 
 
