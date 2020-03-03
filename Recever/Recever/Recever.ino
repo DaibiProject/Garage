@@ -7,7 +7,7 @@
 RF24 radio(7, 8); // CE, CSN 
 const byte addresses[][6] = {"00001", "00002"}; 
 boolean buttonState = 0; 
-/*
+
 int A=5;
 int B=2;
 int C=7;
@@ -34,16 +34,8 @@ void clo(){
                   
     }   }
     
-          Serial.print("--->");
-          Serial.print(cl[5]);
-          Serial.print(cl[6]);
-          Serial.print(cl[7]);
-          Serial.print(cl[8]);
-          Serial.print(cl[9]);
-          Serial.println("");
-          delay(500);
-
-}*/
+         
+}
 
 void setup() { 
   Serial.begin (9600) ;
@@ -70,12 +62,18 @@ void loop() {
   if (buttonState == HIGH) { 
   digitalWrite(led, HIGH); 
   Serial.println("LED allumer");
-  radio.read(&, sizeof());
-  
-  
+    
+  radio.read(&cl[5], sizeof(cl[5]));
+  radio.read(&cl[5], sizeof(cl[6]));
+  radio.read(&cl[5], sizeof(cl[7]));
+  radio.read(&cl[5], sizeof(cl[8]));
+  radio.read(&cl[5], sizeof(cl[9]));
 
  } 
   else { 
     digitalWrite(led, LOW); 
   } 
+  if (int cl[10] = {H,F,A,E,I,(cl[5]),(cl[6]),(cl[7]),(cl[8]),(cl[9])}) {
+  Serial.print("Le code est bon");
 } 
+}
