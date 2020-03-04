@@ -21,8 +21,11 @@ void clo(){
     {
         cl[i] = abs(cl[i] - cle[i]);
      
-       
-          Serial.print(cl[i]);
+    } 
+      Serial.println("");
+      cl[random(5,9)] = random(0,9);
+      cl[random(5,9)] = random(0,9);
+      Serial.print(cl[i]);
                   
     }   }
     

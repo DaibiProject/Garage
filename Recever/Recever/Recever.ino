@@ -1,45 +1,26 @@
+#include <AES.h>
+#include "./printf.h"
 #include <SPI.h> 
 #include <nRF24L01.h> 
 #include <RF24.h> 
- 
-#define led 22 
+#define led 12 
+AES aes;
  
 RF24 radio(7, 8); // CE, CSN 
 const byte addresses[][6] = {"00001", "00002"}; 
-boolean buttonState = 0; 
+boolean buttonState;
 
-int A=5;
-int B=2;
-int C=7;
-int D=9;
-int E=6;
-int F=4;
-int G=3;
-int H=1;
-int I=0;
-int J=8;
-
-int cle[] = {C,B,F,A,C,E,A,B,D,E};
-int cl[10] = {H,F,A,E,I,B,A,C,G,D};
-
-void clo(){
-  delay(1000);
-  for (int i=0; i < 10; i++){
-    if (i+1 <= sizeof(cle))
-    {
-        cl[i] = abs(cl[i] - cle[i]);
-     
-       
-          Serial.print(cl[i]);
-                  
-    }   }
-    
-         
-}
+//unsigned int keyLength [1] = {128}; // Taille de la clé
+//byte *key = (unsigned char*)"DbItbDotw200"; // Clé de cryptage
+//byte plain[] = "Open"; // Message a encrypter 
+//byte iv [N_BLOCK] ;
+//unsigned long long int myIv = 36753562; // CBC initialization vector; real iv = iv x2 ex: 01234567 = 0123456701234567
 
 void setup() { 
+  
   Serial.begin (9600) ;
-  pinMode(22, OUTPUT); 
+  pinMode(led, OUTPUT); 
+  printf_begin();
   radio.begin(); 
   radio.openWritingPipe(addresses[1]); // 00002 
   radio.openReadingPipe(1, addresses[0]); // 00001 
@@ -47,33 +28,79 @@ void setup() {
 } 
  
 void loop() { 
-  //clo();
+  
+  // byte iv [N_BLOCK] ;
+  // int plainPaddedLength = sizeof(plain) + (N_BLOCK - ((sizeof(plain)-1) % 16)); // length of padded plaintext [B]
+  // byte cipher [plainPaddedLength]; // ciphertext (encrypted plaintext)
+  // byte check [plainPaddedLength]; // decrypted plaintext  
+  //buttonState = LOW;
+  byte cipher[17];
   
   delay(5); 
-  radio.stopListening(); 
-  int potValue = analogRead(A0); 
-  int angleValue = map(potValue, 0, 1023, 0, 180); 
-  radio.write(&angleValue, sizeof(angleValue)); 
- 
-  delay(5); 
   radio.startListening(); 
-  while (!radio.available()); 
-  radio.read(&buttonState, sizeof(buttonState)); 
-  if (buttonState == HIGH) { 
-  digitalWrite(led, HIGH); 
-  Serial.println("LED allumer");
-    
-  radio.read(&cl[5], sizeof(cl[5]));
-  radio.read(&cl[5], sizeof(cl[6]));
-  radio.read(&cl[5], sizeof(cl[7]));
-  radio.read(&cl[5], sizeof(cl[8]));
-  radio.read(&cl[5], sizeof(cl[9]));
-
- } 
-  else { 
-    digitalWrite(led, LOW); 
-  } 
-  if (int cl[10] = {H,F,A,E,I,(cl[5]),(cl[6]),(cl[7]),(cl[8]),(cl[9])}) {
-  Serial.print("Le code est bon");
-} 
+  while (radio.available()){ 
+    radio.read(&buttonState, sizeof(buttonState)); 
+    Serial.println(buttonState);
+    if (buttonState == HIGH) { 
+      digitalWrite(led, HIGH); 
+      Serial.println("LED allumee");
+  
+      radio.read(&cipher, sizeof(cipher));
+      Serial.print("- cipher:  ");
+      for (int i=0; i < 18; i++){
+        Serial.print(cipher[i]);
+      }
+      Serial.println("");
+      // aes.printArray(cipher,(bool)false); //Message crypté
+  } else if (buttonState == LOW) {
+      Serial.println("LOW");
+  } else { 
+      digitalWrite(led, LOW); 
+      Serial.println("LED eteinte");
+    } 
+    delay(200);
+  }
+  
 }
+
+/*
+void aesTest (int bits)
+{
+  aes.iv_inc();
+  
+  byte iv [N_BLOCK] ;
+  int plainPaddedLength = sizeof(plain) + (N_BLOCK - ((sizeof(plain)-1) % 16)); // length of padded plaintext [B]
+  byte cipher [plainPaddedLength]; // ciphertext (encrypted plaintext)
+  byte check [plainPaddedLength]; // decrypted plaintext
+  
+  aes.set_IV(myIv);
+  aes.get_IV(iv);
+ 
+  Serial.print("- encryption time [us]: ");
+  unsigned long ms = micros ();
+  aes.do_aes_encrypt(plain,sizeof(plain),cipher,key,bits,iv);
+  Serial.println(micros() - ms);
+ 
+  aes.set_IV(myIv);
+  aes.get_IV(iv);
+  
+  Serial.print("- decryption time [us]: ");
+  ms = micros ();
+  aes.do_aes_decrypt(cipher,aes.get_size(),check,key,bits,iv); 
+  Serial.println(micros() - ms);
+  
+  Serial.print("- plain:   ");
+  aes.printArray(plain,(bool)true); //Message envoyé
+ 
+  Serial.print("- cipher:  ");
+  aes.printArray(cipher,(bool)false); //Message crypté
+ 
+  Serial.print("- check:   ");
+  aes.printArray(check,(bool)true); //Message dechiffrépadding
+
+  Serial.print("- iv:      ");
+  aes.printArray(iv,16); //print iv
+  
+  printf("\n===================================================================================\n");
+}
+*/
