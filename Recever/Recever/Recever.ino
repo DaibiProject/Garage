@@ -6,7 +6,7 @@
 #define led 12 
 AES aes;
  
-RF24 radio(7, 8); // CE, CSN 
+RF24 radio(13, 14); // CE, CSN 
 const byte addresses[][6] = {"00001", "00002"}; 
 boolean buttonState;
 
@@ -42,6 +42,7 @@ void loop() {
     radio.read(&buttonState, sizeof(buttonState)); 
     Serial.println(buttonState);
     if (buttonState == HIGH) { 
+      Serial.println("Button on");
       digitalWrite(led, HIGH); 
       Serial.println("LED allumee");
   
@@ -51,13 +52,12 @@ void loop() {
         Serial.print(cipher[i]);
       }
       Serial.println("");
-      // aes.printArray(cipher,(bool)false); //Message crypté
+      // aes.printArray(cipher,(bool)false); // Message crypté
   } else if (buttonState == LOW) {
-      Serial.println("LOW");
-  } else { 
+      Serial.println("Button off");
       digitalWrite(led, LOW); 
       Serial.println("LED eteinte");
-    } 
+  }
     delay(200);
   }
   

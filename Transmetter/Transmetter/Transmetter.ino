@@ -3,10 +3,10 @@
 #include <SPI.h> 
 #include <nRF24L01.h> 
 #include <RF24.h> 
-#define button 8
+#define button 12
 AES aes;
 
-RF24 radio(7, 8); // CE, CSN 
+RF24 radio(13, 14); // CE, CSN 
 const byte addresses[][6] = {"00001", "00002"}; 
 boolean buttonState = 0; 
 
@@ -41,13 +41,19 @@ void loop ()
   buttonState = digitalRead(button); 
   
   while (!radio.available()){
-    Serial.println(buttonState);
-    Serial.print("- key length : ");
-    Serial.println(keyLength);
-    aesTest (keyLength);
-    delay(2000);
-    radio.write(&buttonState, sizeof(buttonState)); 
-    radio.write(&cipher, sizeof(cipher));
+    if (buttonState == HIGH) {
+      Serial.println("Button on");
+      Serial.println(buttonState);
+      Serial.print("- key length : ");
+      Serial.println(keyLength);
+      aesTest (keyLength);
+      delay(2000);
+      radio.write(&buttonState, sizeof(buttonState)); 
+      radio.write(&cipher, sizeof(cipher));
+    } else if (buttonState == LOW) {
+      Serial.println("Button off");
+      radio.write(&buttonState, sizeof(buttonState));
+    }
   }
   
 }
